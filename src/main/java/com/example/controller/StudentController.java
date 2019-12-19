@@ -3,6 +3,8 @@ package com.example.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,7 @@ public class StudentController {
 		return "deleted";
 	}
 
+	@CachePut(value = "students", key = "#student.id")
 	@PutMapping(path = "/change/{id}")
 	public @ResponseBody String changeStudentById(@PathVariable("id") Long id, @RequestBody Student student) {
 		if (LOG.isDebugEnabled()) {
@@ -67,7 +70,7 @@ public class StudentController {
 		}
 		return this.studuentRepository.findById(id).get();
 	}
-
+	@Cacheable(value = "students")
 	@GetMapping(path = "/all")
 	public @ResponseBody Iterable<Student> getAllStudents() {
 		if (LOG.isDebugEnabled()) {

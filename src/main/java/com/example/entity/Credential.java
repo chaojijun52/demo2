@@ -1,6 +1,12 @@
 package com.example.entity;
 
-public class Credential {
+import java.io.Serializable;
+
+public class Credential implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4560170895516541243L;
 	private String username;
 	private String password;
 

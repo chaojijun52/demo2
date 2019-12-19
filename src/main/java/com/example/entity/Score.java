@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,20 +10,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="score")
-public class Score {
+@Table(name = "score")
+public class Score implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8220011001572873579L;
 	private Long id;
 	private Integer score;
 	private String subject;
 	private Student student;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}
@@ -46,8 +53,8 @@ public class Score {
 		this.subject = subject;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.REMOVE)
-	@JoinColumn(name="sid", referencedColumnName = "id", nullable=false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "sid", referencedColumnName = "id", nullable = false)
 	@JsonIgnore
 	public Student getStudent() {
 		return student;
