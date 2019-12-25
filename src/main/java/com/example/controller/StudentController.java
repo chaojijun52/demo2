@@ -1,10 +1,10 @@
 package com.example.controller;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.entity.Score;
+import com.example.dao.impl.StudentDaoImpl;
 import com.example.entity.Student;
-import com.example.repository.StudentRepository;
 
 @Controller
 @RequestMapping(path = "/student")
@@ -25,57 +24,52 @@ public class StudentController {
 	private static final Logger LOG = LogManager.getLogger(StudentController.class);
 
 	@Autowired
-	private StudentRepository studuentRepository;
+	private StudentDaoImpl studentDaoImpl;//=new StudentDaoImpl();
 
+//	@CachePut(value = "student", key = "#student.id")
 	@PostMapping(path = "/add")
-	public @ResponseBody String addNewStudent(@RequestBody Student student) {
+	public @ResponseBody Student addNewStudent(@RequestBody Student student) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/add");
 		}
-		for (Score score : student.getScores()) {
-			score.setStudent(student);
-		}
-//		this.scoreRepository.saveAll(student.getScores());
-		this.studuentRepository.save(student);
-		return "saved";
+		return this.studentDaoImpl.addNewStudent(student);
 	}
 
+//	@CacheEvict(value="student", key="#id")
 	@DeleteMapping(path = "/delede/{id}")
 	public @ResponseBody String deleteStudentById(@PathVariable("id") Long id) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/delede/" + id);
 		}
-		this.studuentRepository.deleteById(id);
+		this.studentDaoImpl.deleteStudentById(id);
 		return "deleted";
 	}
-
-	@CachePut(value = "students", key = "#student.id")
+//
+//	@CachePut(value = "student", key = "#student.id")
 	@PutMapping(path = "/change/{id}")
-	public @ResponseBody String changeStudentById(@PathVariable("id") Long id, @RequestBody Student student) {
+	public @ResponseBody Student changeStudentById(@PathVariable("id") Long id, @RequestBody Student student) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/change/" + id);
 		}
-		student.setId(id);
-		for (Score score : student.getScores()) {
-			score.setStudent(student);
-		}
-		this.studuentRepository.save(student);
-		return "changed";
+		return this.studentDaoImpl.changeStudentById(id, student);
 	}
 
+//	@Cacheable(value = "student", key="#id")
 	@GetMapping(path = "/get/{id}")
 	public @ResponseBody Student getStudentById(@PathVariable("id") Long id) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/get/" + id);
 		}
-		return this.studuentRepository.findById(id).get();
+		return this.studentDaoImpl.getStudentById(id);
 	}
-	@Cacheable(value = "students")
+	
+//	@Cacheable(value = "students")
 	@GetMapping(path = "/all")
 	public @ResponseBody Iterable<Student> getAllStudents() {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/all");
 		}
-		return this.studuentRepository.findAll();
+		List<Long> ids=this.studentDaoImpl.getAllIds();
+		return this.studentDaoImpl.getAllStudentsByIds(ids);
 	}
 }

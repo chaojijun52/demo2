@@ -20,8 +20,23 @@ public class CommonDAOImpl<T> implements CommonDAO<T> {
 	public List<T> findAllNativeQuery(EntityManager em, Class<T> clazz, String sql, Map<String, Type> scalars) {
 		// TODO Auto-generated method stub
 		Query query = em.createNativeQuery(sql);
-		query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.aliasToBean(clazz)).addScalar("id",
-				StandardBasicTypes.LONG);
+//		query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.aliasToBean(clazz)).addScalar("id",
+//				StandardBasicTypes.LONG);
+		NativeQueryImpl<?> impl = query.unwrap(NativeQueryImpl.class);
+		scalars.forEach((str, type) -> {
+			impl.addScalar(str, type);
+		});
+		impl.setResultTransformer(Transformers.aliasToBean(clazz));
+		return query.getResultList();
+	}
+
+	@Override
+	public List<T> findByIdNativeQuery(Integer id, EntityManager em, Class<T> clazz, String sql, Map<String, Type> scalars) {
+		// TODO Auto-generated method stub
+		Query query = em.createNativeQuery(sql);
+		query.setParameter(1, id);
+//		query.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.aliasToBean(clazz)).addScalar("id",
+//				StandardBasicTypes.LONG);
 		NativeQueryImpl<?> impl = query.unwrap(NativeQueryImpl.class);
 		scalars.forEach((str, type) -> {
 			impl.addScalar(str, type);
