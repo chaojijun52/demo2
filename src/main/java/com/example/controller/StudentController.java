@@ -24,9 +24,8 @@ public class StudentController {
 	private static final Logger LOG = LogManager.getLogger(StudentController.class);
 
 	@Autowired
-	private StudentDaoImpl studentDaoImpl;//=new StudentDaoImpl();
+	private StudentDaoImpl studentDaoImpl;
 
-//	@CachePut(value = "student", key = "#student.id")
 	@PostMapping(path = "/add")
 	public @ResponseBody Student addNewStudent(@RequestBody Student student) {
 		if (LOG.isDebugEnabled()) {
@@ -35,8 +34,7 @@ public class StudentController {
 		return this.studentDaoImpl.addNewStudent(student);
 	}
 
-//	@CacheEvict(value="student", key="#id")
-	@DeleteMapping(path = "/delede/{id}")
+	@DeleteMapping(path = "/delete/{id}")
 	public @ResponseBody String deleteStudentById(@PathVariable("id") Long id) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Now getting in /student/delede/" + id);
@@ -44,8 +42,7 @@ public class StudentController {
 		this.studentDaoImpl.deleteStudentById(id);
 		return "deleted";
 	}
-//
-//	@CachePut(value = "student", key = "#student.id")
+
 	@PutMapping(path = "/change/{id}")
 	public @ResponseBody Student changeStudentById(@PathVariable("id") Long id, @RequestBody Student student) {
 		if (LOG.isDebugEnabled()) {
@@ -54,7 +51,6 @@ public class StudentController {
 		return this.studentDaoImpl.changeStudentById(id, student);
 	}
 
-//	@Cacheable(value = "student", key="#id")
 	@GetMapping(path = "/get/{id}")
 	public @ResponseBody Student getStudentById(@PathVariable("id") Long id) {
 		if (LOG.isDebugEnabled()) {
@@ -63,7 +59,6 @@ public class StudentController {
 		return this.studentDaoImpl.getStudentById(id);
 	}
 	
-//	@Cacheable(value = "students")
 	@GetMapping(path = "/all")
 	public @ResponseBody Iterable<Student> getAllStudents() {
 		if (LOG.isDebugEnabled()) {

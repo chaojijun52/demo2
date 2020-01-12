@@ -14,7 +14,6 @@ import com.example.entity.Student;
 import com.example.repository.StudentRepository;
 
 @Service
-//@Component
 public class StudentDaoImpl implements StudentDao {
 	@Autowired
 	private StudentRepository studuentRepository;
